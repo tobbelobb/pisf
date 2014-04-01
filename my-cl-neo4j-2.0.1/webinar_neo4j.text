@@ -1,0 +1,72 @@
+ Webinar with Michael Hunger
+We want to create indexes over all frequent starting points (filter tickboxes)
+ CREATE INDEX ON :Model(name)
+ schema checks it?
+ profile MATCH etc.... gives information on how effective the lookup is
+ To put labels on many nodes:
+ MATCH (m:Movie)<-[:DIRECTED]-(d) SET d:Director RETURN count(*)
+ MERGE (u:User {login:"Andreas"}) RETURN u;
+ ^^ will create the andreas user node if it didn't exist already ^^
+ MERGE (u:User {login:"Andreas"}) RETURN u;
+ ^^ will do nothing ^^
+ SET u.accessed=timestamp();
+ ^^ är kanske en bra ide
+ MERGE (u:User {login:"Andreas"}) on match u SET u.accessed=timestamp()
+                                  on create u SET u.created=timestamp();
+ ^^ Can be used for nodes. Is it implemented for paths yet?
+ WHERE n.name = "Chris"; is valid because n.name returns NULL if it's not
+ there
+ you REMOVE properties and labels
+ you DELETE nodes and realtionships
+ EXTRACT (n in nodes | n.name) (used for example like MATCH nodes:Movies
+ RETURN exract(n in nodes | substring(0,5,n.name))
+ FILTER (n in nodes | n.name =~ "And.*")
+ FOREACH (v in nodes | CREATE ( {name : v} ))
+ Cypher is way to go with neo4j...
+ "If you want to combine several Cypher statements in a seminal transaction,
+ you could do that, and you probabaly also should do that if you want to have
+ consistent reads."
+
+// CREATE a user against the new RESTful API
+//
+ POST 
+ /db/data/transaction {"statements":[{"statement":
+ "MATCH (u:User) RETURN u"}]}
+ // ==> 201 Created 
+ // ==> <data on the created transaction.
+           - URI of the transaction (/db/data/transaction/X/commit
+           - data returned in the transaction
+           - The expiration date of the transaction>
+ POST
+ /db/data/transaction/X {"statements":[{"statement":
+ "CREATE (u:User {login:{name}}) RETURN u", 
+ "parameters":{"name":"Andreas"}}]}
+ // Andreas will now be returned by the following
+ POST 
+ /db/data/transaction/X {"statements":[{"statement":
+ "MATCH (u:User) RETURN u"}]}
+ // But not by this followind (which will instead open a new transaction
+ POST 
+ /db/data/transaction/ {"statements":[{"statement":
+ "MATCH (u:User) RETURN u"}]}
+ // We decide we don't want Andreas in the database. Rolling back transaction X
+ DELETE /db/data/transaction/X
+ // Instead we want Peter in the database
+ POST
+ /db/data/transaction/X {"statements":[{"statement":
+ "CREATE (u:User {login:{name}}) RETURN u", 
+ "parameters":{"name":"Peter"}}]}
+ //==> 201 Created
+ //==> /db/data/transaction/Y/commit
+ // Confirming and making this change of the database globally available
+ POST /db/database/transaction/Y/commit {"statements":[]}
+
+ one could use curl to create and receive the http-request with
+ curl -i -H content-type:application/json -H accept:application/json \
+   -d'{"statements":[{"statement":"MATCH n RETURN n"}]}' \
+   http://localhost:7474/db/data/transaction
+ this actually returns the transaction location header
+ Location:http://localhost:7474/db/data/transaction/Z
+ plus the data listed earlier
+   
+

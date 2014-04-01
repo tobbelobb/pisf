@@ -1,0 +1,6 @@
+ * I do not want to mess around with neo4j internal id's
+ * As much as possible should be done with Cypher in single transactions
+   - This is mainly because it's so much easier to write
+ * I want lots of lots of specialized accessor 
+   functions for (a large portion of) all possible situations.
+

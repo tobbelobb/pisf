@@ -1,0 +1,15 @@
+// In its own file because Neo4j says
+// "Cannot perform data updates in a transaction that has performed schema updates."
+// Should be read and posted to Cypher endpoint line by line
+// Should be done in one transaction
+// Constraints must create indexes, so if an index on any of these were
+// created before this is run, it has to be removed before this will work.
+CREATE CONSTRAINT ON (category:Category) ASSERT category.name IS UNIQUE
+CREATE CONSTRAINT ON (part:Part) ASSERT part.name IS UNIQUE
+CREATE CONSTRAINT ON (paragraph:Paragraph) ASSERT paragraph.name IS UNIQUE
+CREATE CONSTRAINT ON (problem:Problem) ASSERT problem.name IS UNIQUE
+CREATE CONSTRAINT ON (solution:Solution) ASSERT solution.name IS UNIQUE
+CREATE CONSTRAINT ON (figure:Figure) ASSERT figure.name IS UNIQUE
+CREATE CONSTRAINT ON (picture:Picture) ASSERT picture.name IS UNIQUE
+CREATE CONSTRAINT ON (web_page:Web_page) ASSERT web_page.name IS UNIQUE
+CREATE CONSTRAINT ON (mini_article:Mini_article) ASSERT mini_article.name IS UNIQUE

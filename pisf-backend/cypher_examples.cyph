@@ -1,0 +1,104 @@
+// Try to create as much as possible with MERGE,
+// to avoid duplicate nodes and relationships
+
+
+MATCH (p:Paragraph {name:"The first Paragraph", created:timestamp(), accessed:timestamp()})
+FOREACH (name in ["Hardware", "Software"] |
+ MERGE (n:Category {name:name})
+  ON CREATE SET n.created = timestamp(), n.accessed = timestamp()
+  ON MATCH SET n.accessed = timestamp())
+WITH p
+MATCH (q:Category) WHERE q.name IN ["Hardware", "Software"]
+MERGE (p)-[r:IS_ABOUT]->(q)
+RETURN r
+
+// Deletes orphaned nodes
+MATCH (n) 
+WHERE NOT (n)--() 
+DELETE n
+
+// Label as a parameter. Wonder if it's faster...
+// Cypher refcars says
+// "Use parameters instead of literals when possible. 
+// This allows Cypher to re-use your queries instead of 
+// having to parse and build new execution plans."
+(cypher-query "
+MATCH (a) WHERE {label} IN labels(a) RETURN a
+" 
+:params `(("label" . "Category")))
+// Stackoverflow says: nonono, feature is requested, but dont do it now
+// Neo dev: "One of the strong arguments to have only literal labels, 
+// is that Cypher needs to know the label at query planning time in 
+// order to select indexes and do cost estimation. 
+// Without knowing the label in advance, it cannot do such."
+
+FOREACH
+(n in {nodes} |  
+MERGE (c:Label {key : n.key}}) ON CREATE SET c.foo = n.foo, c.bar = n.bar )
+
+
+// You can add PROFILE to the start of your cypher query to see more details on what it's doing.
+
+
+After a MERGE, you can have:
+ON, START, MATCH, MERGE, CREATE, SET, 
+DELETE, REMOVE, FOREACH, WITH, RETURN, UNION, ';' or end of input
+
+// This actually created one relationship! =D=D :
+MERGE (a:Category {name:"Nut"})
+MERGE (b:Category {name:"Bolt"})
+MERGE (a) -[:PAIRS_WITH]-> (b)
+// This is now how I must build my init-bush-cypher-call
+
+// This created one labeled node and two relationships! =D=D :
+MERGE (bp:Category {name:"Build Platform"})
+MERGE (hw:Category {name:"Hardware"})
+MERGE (me:Category {name:"Mechanics"})
+MERGE (me)-[:IS]->(hw)
+MERGE (bp)-[:IS]->(hw)
+MERGE (bp)-[:IS]->(me)
+
+CREATE (new:Category {name : "Slic3r", created:timestamp(), accessed:timestamp()}) 
+WITH new 
+MATCH (super:Category), (sub:Category) WHERE super.name in ["Slicer" "Cam-tool"] AND sub.name in []
+CREATE (new) -[:IS]-> (super), (sub) -[:IS]-> (new) 
+SET sub.accessed=timestamp(), super.accessed=timestamp() RETURN new
+
+CREATE (new:Category {name : "Slic3r", created:timestamp(), accessed:timestamp()}) 
+WITH new 
+MATCH (super:Category)
+WHERE super.name in ["Slicer", "Cam-tool"] 
+CREATE (new) -[:IS]-> (super) 
+SET super.accessed=timestamp()
+MATCH (sub:Category) 
+WHERE sub.name in ["Firmware"]
+CREATE (sub) -[:IS]-> (new)
+SET sub.accessed=timestamp()
+RETURN new.name
+
+
+CREATE (new:Paragraph {name : "Test Paragraph", content : "This is a test", created:timestamp()})
+WITH new
+MATCH (b:Bush) WHERE b.name in ["Software", "Theory"]
+SET b.accessed=timestamp()
+CREATE (new)-[:IS_ABOUT]->(b)
+WITH new
+MATCH (p:Picture) WHERE p.name in ["Problem Picture", "Solution Picture"]
+SET p.accessed=timestamp()
+CREATE (new)-[:EXPLAINS]->(p)
+RETURN new.name
+
+MATCH (prob_bush:Bush), (prob_pic_bush:Bush)  
+WHERE prob_bush.name IN ["Theory"] 
+  AND prob_pic_bush.name IN ["Software"] 
+SET prob_bush.accessed  = timestamp(), prob_pic_bush.accessed = timestamp() 
+MERGE (new:Mini_article {name : "The First Mini Article"}) 
+  ON CREATE SET new.created = timestamp(), new.title   = "The first mini article", new.votes   = 0 
+MERGE (prob:Paragraph {name : "Mini Articles Are Hard To Create"}) 
+  ON CREATE SET prob.created=timestamp(), prob.content="This is problem content" 
+  ON MATCH SET prob.accessed=timestamp() 
+MERGE (prob_pic:Picture:Visual {name : "Problem_picture"}) 
+  ON CREATE SET prob_pic.path = "pictures\/problem_picture.png", prob_pic.created=timestamp()
+  ON MATCH SET prob_pic.accessed=timestamp()
+MERGE (prob_pic_caption:Paragraph {name : {prob_pic_caption_name}}) ON CREATE SET prob_pic_caption.created=timestamp(), prob_pic_caption.content={prob_pic_caption_content} ON MATCH SET prob_pic_caption.accessed=timestamp() MERGE (sol_pic_caption:Paragraph {name : {sol_pic_caption_name}}) ON CREATE SET sol_pic_caption.created=timestamp(), sol_pic_caption.content={sol_pic_caption_content} ON MATCH SET sol_pic_caption.accessed=timestamp() MERGE (new)              -[:PROBLEM ]-> (prob) MERGE (new)              -[:VISUAL  ]-> (prob_pic) MERGE (prob_pic)         -[:EXPLAINS]-> (prob) MERGE (new)              -[:SOLUTION]-> (sol) MERGE (new)              -[:VISUAL  ]-> (sol_pic) MERGE (sol_pic)          -[:EXPLAINS]-> (sol)  MERGE (prob)             -[:IS_ABOUT]-> (prob_bush)  MERGE (sol)              -[:IS_ABOUT]-> (sol_bush)   MERGE (prob_pic)         -[:DEPICTS ]-> (prob_pic_bush)  MERGE (sol_pic)          -[:DEPICTS ]-> (sol_pic_bush)  MERGE (new)              -[:CAPTION ]-> (prob_pic_caption)  MERGE (new)              -[:CAPTION ]-> (sol_pic_caption)  MERGE (prob_pic_caption) -[:EXPLAINS]-> (prob_pic)  MERGE (sol_pic_caption)  -[:EXPLAINS]-> (sol_pic) RETURN ma.name
+

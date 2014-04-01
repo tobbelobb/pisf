@@ -1,0 +1,14 @@
+Neo4j tries to avoid matching and returning closed loops.
+If you want to match closed loops, you need to do it in two
+separate MATCH clauses.
+
+When matching with MATCH and filtering with WHERE, there are no
+guarantees on which of them is filtered with first. Behaving like
+this, with no particular order in operations, 
+is called 'being a declerative language'.
+
+We may need to increase maximum number of allowed open files for a user,
+and run Neo4j through that user. Increase from 1024 to at least
+40000.
+
+There exist a prepared debian package for Neo4j

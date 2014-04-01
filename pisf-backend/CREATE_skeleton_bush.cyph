@@ -1,0 +1,42 @@
+// Intention is that no two :Category nodes can have same name
+// but a :Category node can have same name as a :Part node or a :Solution node etc.
+// Combination of label and name is then as good as id?
+// These lines must be sent in with separate Cypher calls...
+
+// Batching this is possible and will be done when there is need for more
+// performance
+CREATE 
+(rr_root:Category:RepRap_root {name : "RepRap", created : timestamp(), accessed : timestamp()}),
+(rr_root) -[:USES]-> (hw_root:Category {name : "Hardware", created : timestamp(), accessed : timestamp()}),
+ (el_root:Category {name : "Electronics", created : timestamp(), accessed : timestamp()})                -[:IS]-> (hw_root) ,
+  (mc_root:Category {name : "Microcontroller Board", created : timestamp(), accessed : timestamp()})      -[:IS]-> (el_root),
+  (sm_root:Category {name : "Stepper Motor", created : timestamp(), accessed : timestamp()})              -[:IS]-> (el_root),
+  (es_root:Category {name : "End Stop", created : timestamp(), accessed : timestamp()})                   -[:IS]-> (el_root),
+  (hb_root:Category {name : "Heatbed", created : timestamp(), accessed : timestamp()})                    -[:IS]-> (el_root),
+  (sd_root:Category {name : "Stepper Driver", created : timestamp(), accessed : timestamp()})             -[:IS]-> (el_root),
+ (me_root:Category {name : "Mechanics", created : timestamp(), accessed : timestamp()})                  -[:IS]-> (hw_root) ,
+  (belt_root:Category {name : "Belt", created : timestamp(), accessed : timestamp()})                     -[:IS]-> (me_root),
+  (pu_root:Category {name : "Pulley", created : timestamp(), accessed : timestamp()})                     -[:IS]-> (me_root),
+  (tr_root:Category {name : "Threaded Rod", created : timestamp(), accessed : timestamp()})               -[:IS]-> (me_root),
+  (sr_root:Category {name : "Smooth Rod", created : timestamp(), accessed : timestamp()})                 -[:IS]-> (me_root),
+  (bearing_root:Category {name : "Bearing", created : timestamp(), accessed : timestamp()})               -[:IS]-> (me_root),
+   (lb_root:Category {name : "Linear Bearing", created : timestamp(), accessed : timestamp()})             -[:IS]-> (bearing_root),
+   (arb_root:Category {name : "Axial Rotation Bearing", created : timestamp(), accessed : timestamp()})    -[:IS]-> (bearing_root),
+  (nut_root:Category {name : "Nut", created : timestamp(), accessed : timestamp()})                       -[:IS]-> (me_root),
+  (bolt_root:Category {name : "Bolt", created : timestamp(), accessed : timestamp()})                     -[:IS]-> (me_root),
+(rr_root) -[:USES]-> (sw_root:Category {name : "Software", created : timestamp(), accessed : timestamp()}),
+ (cad_root:Category {name : "Cad-tools", created : timestamp(), accessed : timestamp()})                 -[:IS]-> (sw_root),
+ (cam_root:Category {name : "Cam-tools", created : timestamp(), accessed : timestamp()})                 -[:IS]-> (sw_root),
+  (sl_root:Category {name : "Slicer", created : timestamp(), accessed : timestamp()})                     -[:IS]-> (cam_root),
+   (slic3r_root:Category {name : "Slic3r", created : timestamp(), accessed : timestamp()})                 -[:IS]-> (sw_root),
+   (slic3r_root)                                        -[:IS]-> (sl_root),
+ (fw_root:Category {name : "Firmware", created : timestamp(), accessed : timestamp()})                   -[:IS]-> (sw_root),
+  (ma_root:Category {name : "Marlin", created : timestamp(), accessed : timestamp()})                     -[:IS]-> (fw_root),
+(rr_root) -[:USES]-> (th_root:Category {name : "Theory", created : timestamp(), accessed : timestamp()}),
+ (cs_root:Category {name : "Coordinate System", created : timestamp(), accessed : timestamp()})          -[:IS]-> (th_root)
+
+// There should exist a :Describable label on :Video :Problem :Solution :Picture
+
+// Need for these nodes later?
+//  (fr_root:Category {name : "Frame", created : timestamp(), accessed : timestamp()})                 -[:IS]-> (me_root)
+//  (mo_root:Category {name : "Motion", created : timestamp(), accessed : timestamp()})                -[:IS]-> (mo_root)

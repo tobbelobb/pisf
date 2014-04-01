@@ -1,0 +1,24 @@
+ - All nodes have names. They begin with uppercase letter.
+   Spaces are written out as spaces. First letter after space is uppercase.
+ - Labels begin with uppercase letter
+ - Lowest nodes in the bush's :IS hierarchy have singular cased names, 
+   like "Stepper Motor".
+ - The most specific description of a part is in a node with label :Part.
+   It point on at least one outgoing :CATEGORY relation.
+ - Only nodes with :Part label or :Root label can point with :IS relation
+   at other :Root nodes
+ - Nodes with :Part label or :Root label can point at several :Root nodes with
+   :IS relations.
+ - No special measures is taken to avoid circles in the :Root hierarchy
+   beacause Neo4j tries to avoid such matches by itself, as long as the circle
+   is found within a single MATCH clause.
+ - All nodes have created and accessed timestamps. When a property gets changed
+   (added, removed or set to another value) or a relation gets changed 
+   (added, deleted or gets its properties changed) the accessed-timestamp
+   is updated.
+ - Categories are allowed to not be connected to any other categories
+ - The property accessed should maybe be changed with a last_changed-property
+ - When nodes and relations are created or deleted, everything must happend in
+   closed transactions.
+ - Paths in the database should all be relative, so pisf can add *source-pathname*
+   to them.

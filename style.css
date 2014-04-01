@@ -1,0 +1,115 @@
+
+body {
+	background-color:#ffffff;
+}
+#header {
+	position:absolute;
+	background-repeat:no-repeat;
+	width:642px;
+	height:233px;
+	top:0px;
+	left:0px;
+	z-index:1;
+}
+#SiteName {
+	position:absolute;
+	margin-left:15%;
+	top:50px;
+	width:869px;
+	height:45px;
+	z-index:2;
+	font-size:35px;
+	overflow:hidden;
+	color:#777d8f;
+}
+
+#SiteName a:link,
+#SiteName a:visited,
+#SiteName a:hover {
+  color:#777d8f;
+  text-decoration:none;
+}
+
+h1 {
+	color:#000000;
+	font-size:20px;
+	line-height: 100%;
+	margin-bottom: 0px;
+}
+#date {
+  font-size: 50%;
+  color: rgb(110,110,110);
+  line-height: 100%;
+  margin-bottom: 10px;
+}
+#MainContent {
+	position:relative;
+	top:110px;
+	width:606px;
+	z-index:6;
+	margin-left:15%;
+	font-size:14px;
+	line-height:150%; 
+	color:#30424c;
+}
+
+#BigButton a:link {
+	background-color:#18c312;
+	-webkit-border-top-left-radius:15px;
+	-moz-border-radius-topleft:15px;
+	border-top-left-radius:15px;
+	-webkit-border-top-right-radius:15px;
+	-moz-border-radius-topright:15px;
+	border-top-right-radius:15px;
+	-webkit-border-bottom-right-radius:15px;
+	-moz-border-radius-bottomright:15px;
+	border-bottom-right-radius:15px;
+	-webkit-border-bottom-left-radius:15px;
+	-moz-border-radius-bottomleft:15px;
+	border-bottom-left-radius:15px;
+	text-indent:0;
+	display:inline-block;
+	font-size:20px;
+	font-weight:bold;
+	height:59px;
+	line-height:59px;
+	width:373px;
+	text-decoration:none;
+	text-align:center;
+  color:#ffffff;
+  margin-top:50px;
+}
+
+#BigButton a:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1bc024), color-stop(1, #0fbe21) );
+	background:-moz-linear-gradient( center top, #1bc024 5%, #0fbe21 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1bc024', endColorstr='#0fbe21');
+	background-color:#1dc64f;
+  color:#ffffff;
+}
+
+#BigButton a:active {
+	position:relative;
+	top:1px;
+  color:#ffffff;
+}
+
+#BigButton a:visited {
+  color:#ffffff;
+}
+
+.bottom{
+  margin-bottom:300px;
+}
+
+.top{
+  margin-top:40px;
+}
+
+.bottom-three {
+  margin-bottom: 3cm;
+}
+
+li.hasName {
+  list-style-image:url("pictures/Checkmark2.jpg");
+}
