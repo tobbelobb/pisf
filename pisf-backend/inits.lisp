@@ -1,8 +1,8 @@
 (in-package :pisf-backend)
 
 (defparameter *source-pathname* #P"/home/torbjorn/Desktop/VanityRepRap/pisf/pisf-backend/")
-(defparameter *bush-create-pathname* 
-  (merge-pathnames #P"CREATE_skeleton_bush.cyph" *source-pathname*))
+
+;; Convenience variables and functions based on *source-pathname*
 (defparameter *bush-merge-pathname* 
   (merge-pathnames #P"Merge_skeleton_bush.cyph" *source-pathname*))
 (defparameter *constraints-pathname* 

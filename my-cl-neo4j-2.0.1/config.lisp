@@ -1,15 +1,11 @@
 (in-package :my-neo4j)
 
-;; Convenience functions and variables.
-
-;; Should not be run like this...
-(defparameter *neo4j-executable-path*
-  "/home/torbjorn/Downloads/neo4j-community-2.0.1/bin/neo4j")
-(defun neo4j-executable (&optional (argument "start")) ; args "start" and "stop" are accepted
-  (sb-ext:run-program *neo4j-executable-path* (list argument)))
 (defparameter *host* "http://localhost:7474/")
 ;; For https requests:
 ;; (defparameter *host* "http://localhost:7473/")
+
+
+;; Convenience functions and variables based on *host* value
 (defun add-host (request-uri)
   (concatenate 'string *host* request-uri))
 

@@ -1,4 +1,4 @@
-// Create all nodes
+// Create all bush nodes
 MERGE (reprap:Reprap {name : "Reprap"})
   ON CREATE SET reprap.created=timestamp()
   ON MATCH SET reprap.accessed=timestamp()

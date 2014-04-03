@@ -377,6 +377,8 @@
       (write-string (escape-string (subseq text previous-end)) s)))) ; The text after last web-adress
   
 
+;; This could be a full markdown parser. 3bmd is a cl library (although slow)
+;; for handling that parsing
 (defun escape-text (text)
   (regex-replace *two-or-more-newlines-regex* 
                  (escape-except-links text) 

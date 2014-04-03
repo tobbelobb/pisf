@@ -1,8 +1,6 @@
 (defpackage :print-issue-solution-filter-backend
   (:nicknames :pisf-backend) 
   (:use :cl :my-cl-neo4j-2.0.1)
-  ;; (:export #:create-category #:insert-paragraph #:insert-picture
-  ;;          #:build-figure #:build-mini-article)
   (:documentation "A tool for building and accessing a structured knowledge database ~
                    for the RepRap community.")
   (:export ; functions
