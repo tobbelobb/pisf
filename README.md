@@ -2,7 +2,7 @@ Print issue solution filter
 ------------------------
 
 ### What is it?
-A web app that handles small user-created articles that follows a rigid
+A web app that handles small user-created articles that follow a rigid
 template.
 
 ### Why make it?
@@ -20,11 +20,8 @@ and none with web-programming.
 
 ### How to run it?
  1. Fire up [neo4j](http://www.neo4j.org/) to serve a graph on some adress
- 2. Open my-cl-neo4j-2.0.1/config.lisp and feed that adress into the
-    ```*host*```
-    special variable
- 3. Head into pisf-backend/inits.lisp and feed in the path to that directory
-    into the ```*source-pathname*``` special variable
+ 2. Open my-cl-neo4j-2.0.1/config.lisp and feed that adress into the ```*host*``` special variable
+ 3. Head into pisf-backend/inits.lisp and feed in the path to that directory into the ```*source-pathname*``` special variable
  4. Add your pisf folder and its subfolders to your [quicklisp](http://www.quicklisp.org/beta/) search path. I do this by creating the file ~/.config/common-lisp/source-registry.conf.d/link-farm.conf and adding the line ```(:tree "/path/to/pisf/")``` to it. Check the [ASDF-manual](http://common-lisp.net/project/asdf/asdf.html#Configuring-ASDF-to-find-your-systems) for other methods.
  5. Fire up SBCL and type ```(ql:quickload :pisf)```
  6. Step into the package with ```(in-package :pisf)```
@@ -35,8 +32,7 @@ and none with web-programming.
 
 ### Features
  * Uses no javascript or cookies
- * It's backend is a Neo4j database and a custom made wrapper to its REST
-interface, called my-cl-neo4j-2.0.1
+ * It's backend is a Neo4j database and a custom made wrapper to its REST interface, called my-cl-neo4j-2.0.1
 
 ### Why such a cumbersome name? 
 I don't want to give the impression that this is
