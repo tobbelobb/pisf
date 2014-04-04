@@ -365,9 +365,9 @@
 
 (defun escape-except-links (text)
   (with-output-to-string (s)
-    (let ((previous-end 1))
+    (let ((previous-end 0))
       (cl-ppcre:do-matches (start end *web-adress-regex* text)
-        (write-string (escape-string (subseq text (- previous-end 1) start)) s)
+        (write-string (escape-string (subseq text previous-end start)) s)
         (when (string= (subseq text (+ 1 start) (+ 8 start)) "http://")
           (incf start 7))
         (when (string= (subseq text (+ 1 start) (+ 9 start)) "https://")
@@ -629,7 +629,7 @@
                                                                 path-data ; can be filled with path to already handled image or tmp-file data for sending to handle-image
                                                                 (new-name :parameter-type 'string)
                                                                 (is-about :parameter-type '(list string)))
-  (let* ((db-name (if (given? new-name) new-name
+  (let* ((db-name (if (given? new-name) (name-conventions new-name)
                     (path-data->db-name path-data)))
          (exists-in-db? (name-and-label-exist? db-name "Picture"))
          (it-str (which->it-str which)))
@@ -674,7 +674,7 @@
                                                                     content
                                                                     (is-about :parameter-type '(list string)))
   (let* ((label (which->label which))
-         (db-name (if (given? new-name) new-name
+         (db-name (if (given? new-name) (name-conventions new-name)
                      (paragraph->name content)))
          (exists-in-db? (name-and-label-exist? db-name label))
          (it-str (which->it-str which)))
