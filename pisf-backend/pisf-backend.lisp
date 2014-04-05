@@ -1,6 +1,5 @@
 (in-package :pisf-backend)
 
-
 (defmacro dodge-empty-names (names &body body)
   `(if (loop for name in (flatten (list ,@names))
              always (and (stringp name) (> (length (string-left-trim " " name)) 0)))
@@ -13,7 +12,7 @@
     (format nil "none were empty")))
 
 (defun name-conventions (n)
-  (format nil "~:(~a~)" (string-trim " " n)))
+  (format nil "~:(~a~)" (string-trim " " n))) ; What happens with newlines and tabs?
 
 ;; The idea is:
 ;; Name variables should be rebound to values that are ensured to follow
@@ -38,7 +37,7 @@
                             ((listp ,name) (mapcar #'name-conventions ,name))
                             (t (lg :error "Tried to name-conventionize something unknown: ~a~%" ,name))))) 
        ,@body)))
-                              
+
 (defun conv-test (name1 name-list name-list2)
  (name-conventionize (name1 name-list name-list2)
     (format nil "name1: ~s~%~
@@ -183,7 +182,9 @@
                            (explains nil) 
                            (commit-uri nil)
                            (commit? t)) 
-  (if (and (stringp content) (not (string= "" content)) is-about) ; Assure is-about given
+  (if (and (stringp content) (not (string= "" content)) 
+           (or is-about 
+               (and (null explains) (null explained-by))))
     (let ((name (if name name (first-three-words content)))) ; Construct name
       (name-conventionize 
         (name is-about explained-by explains)
@@ -197,23 +198,23 @@
             commit-uri
             (transaction-request
               (format nil ; MERGE is used inside FOREACH beacause MATCH is'nt allowed. Should use MATCH somehow
-                      "MATCH (b:Bush) ~
+                      "~:[~;MATCH (b:Bush) ~] ~
                       ~:[~;, (explained_by:Picture) ~] ~
                       ~:[~;, (explains:Picture) ~] ~
-                       WHERE b.name            IN {bush_names} ~
+                      ~:[~; WHERE b.name            IN {bush_names} ~] ~
                     ~:[~;AND explained_by.name IN {explained_by}~] ~
                     ~:[~;AND explains.name     IN {explains}~] ~
-                       SET b.accessed            = timestamp() ~
+                    ~:[~; SET b.accessed            = timestamp() ~]~
                     ~:[~;, explained_by.accessed = timestamp()~] ~
                     ~:[~;, explains.accessed     = timestamp()~] ~
                        MERGE (new:Paragraph {name : {name}, content : {content}}) ~
                          ON CREATE SET new.created=timestamp() ~
-                       MERGE (new) -[:IS_ABOUT]->(b) ~
+                  ~:[~;MERGE (new) -[:IS_ABOUT]->(b) ~]~
                   ~:[~;MERGE (new)<-[:EXPLAINS]- (explained_by)~] ~
                   ~:[~;MERGE (new) -[:EXPLAINS]->(explains)~] ~
                        RETURN new.name"
-                 explained-by explains explained-by explains
-                 explained-by explains explained-by explains) 
+                 is-about explained-by explains is-about explained-by explains is-about
+                 explained-by explains is-about explained-by explains) 
               (append `(("name" . ,name)
                         ("content" . ,content)
                         ("bush_names" . ,(coerce (listify is-about) 'simple-vector)))
@@ -232,6 +233,7 @@
 ;; directly...
 
 ;; Picture may be inserted without any relations
+;; What to do if picture doesn't get tagged? redirect to special tagging page!
 (defun insert-picture (path depicts ; DEPICTS rels point into :Bush.
                             &key
                             (name nil) ; Generate name from filename if not given
