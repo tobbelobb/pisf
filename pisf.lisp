@@ -53,6 +53,7 @@
                (let* ((filename (concatenate 'string (my-string->word mini_article.title) ".html"))
                       (filepath_relative (concatenate 'string "mini_articles/" filename))
                       (ma-uri (title->uri mini_article.title)))
+                 (ensure-directories-exist (with-source "mini_articles/"))
                  (with-open-file (s (with-source filepath_relative)
                                     :direction :output
                                     :if-exists :supersede
@@ -109,6 +110,7 @@
       (let* ((filename (concatenate 'string (my-string->word mini_article.title) ".html"))
              (filepath_relative (concatenate 'string "mini_articles/" filename))
              (ma-uri (title->uri mini_article.title)))
+        (ensure-directories-exist (with-source "mini_articles/"))
         (with-open-file (s (with-source filepath_relative)
                            :direction :output
                            :if-exists :supersede
@@ -799,7 +801,7 @@
                                ("uri" . ,(title->uri (first names))))))
         (progn
           (serve-mini-article (name-conventions (first names)) :serve-pictures? nil)
-        (redirect "/print-issue-solution-filter"))))
+          (redirect "/print-issue-solution-filter"))))
 
 ;; to start it:
 ;; start neo4j somehow
