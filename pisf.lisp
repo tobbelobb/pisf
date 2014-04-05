@@ -603,7 +603,7 @@
              (new-absolute-path (merge-pathnames new-relative-path *source-pathname*))
              (small-absolute-path (add-small new-absolute-path)))
         (rename-file path new-absolute-path)
-        (sb-ext:run-program "/usr/bin/convert" ; Very very system specific here...
+        (sb-ext:run-program "/usr/bin/env convert" ; Very very system specific here...
                             `("-resize" "500" 
                               ,(namestring new-absolute-path)
                               ,(namestring small-absolute-path)))
