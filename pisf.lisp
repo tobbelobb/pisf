@@ -183,7 +183,9 @@
         (format nil "MATCH (cat:Bush) ~
                      WHERE cat.name IN {categories} ~
                      MATCH (cat) <-[:IS*0..]- (cat2:Bush) <-[:IS_ABOUT|DEPICTS]- () <-- (ma:Mini_article) ~
-                     RETURN DISTINCT ma.title, ma.uri, ma.votes ORDER BY ma.votes DESC")
+                     WITH ma.title AS title, ma.uri AS uri, ma.votes AS votes, count(ma) AS relevance ~
+                     ORDER BY relevance DESC, votes DESC ~
+                     RETURN title, uri, votes, relevance")
         "MATCH (ma:Mini_article) RETURN ma.title, ma.uri, ma.votes ORDER BY ma.votes DESC")
       :params (when categories `(("categories" . ,(coerce (listify categories) 'simple-vector)))))))
 
@@ -386,7 +388,6 @@
                  (escape-except-links text) 
                  "</p><p>"))
 
-       ;;(:input :type "submit" :value "Filter!" :class "btn"))
 (define-easy-handler (pisf :uri "/print-issue-solution-filter") ((checked :parameter-type '(list string)) (checkbox-tree :parameter-type #'read-from-string))
   (let* ((checked (mapcar #'read-from-string checked)) ; Should maybe work with cookies instead of these monster arguments?
          (new-tree (update-tree (handle-checked checkbox-tree checked)))
@@ -407,7 +408,8 @@
          (do* ((mas-list (pop mas-lists) (pop mas-lists))
                (ma.title (pop mas-list) (pop mas-list))
                (ma.uri (pop mas-list) (pop mas-list))
-               (ma.votes (pop mas-list) (pop mas-list)))
+               (ma.votes (pop mas-list) (pop mas-list))
+               (ma.relevance (pop mas-list) (pop mas-list)))
            ((null ma.title))
            (when (or (string= "/mini-article-not-initiated" ma.uri) (null ma.uri))
              (lg :warn "Linking to not initiated mini article ~s, with uri ~s on front page~%" ma.title ma.uri))
@@ -415,7 +417,9 @@
              (:li 
                (:a :href  ma.uri 
                 (esc ma.title))
-               (fmt " with ~d votes" ma.votes)))))) ;; and x relevance
+               (fmt " with")
+               (when checked (fmt " relevance ~d and" ma.relevance))
+               (fmt " ~d votes" ma.votes)))))) ;; and x relevance
       (:p "Know a solution that's not here? Make it available to others " 
        (:a :href "/new-mini-article" "here")))))
 
@@ -708,7 +712,7 @@
   (if (name-and-label-exist? new-name "Mini_article")
     (generate-standard-page (:title "Exists")
       (:p "The Mini Article with title ~s already exists in the database with the following content: "
-       (:a :href (title->uri new-name) (str new-name)) ; Want a more robust uri here...
+       (:a :href (escape-string (title->uri new-name)) (str new-name)) 
         ". Please choose another title: ")
        (title-form)) ; redirect don't need html-escaping!
       (redirect (compute-redirect-str "/new-mini-article?names=~w" (cons new-name (rest names))))))

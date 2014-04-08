@@ -45,6 +45,7 @@ h1 {
 #MainContent {
 	position:relative;
 	top:110px;
+	width:auto;
 	z-index:6;
 	margin-left:15%;
 	font-size:14px;

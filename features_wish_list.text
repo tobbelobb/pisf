@@ -1,0 +1,4 @@
+ * Full markdown parsing of user input text
+ * Remembering input when tags are added and page recomputed/loaded
+ * A :Common_Error_Source-bush like the :Categories bush, to get more interesting combinations of tags
+ * Match all or match some in front-page filter

@@ -92,7 +92,7 @@
   (add-small name))
 
 (defun name->uri (name)
-  (concatenate 'string "/" (my-string->word name)))
+  (url-encode (concatenate 'string "/" (my-string->word name))))
 
 (defun title->uri (title)
   (name->uri title))
