@@ -418,7 +418,7 @@
                (:a :href  ma.uri 
                 (esc ma.title))
                (fmt " with")
-               (when checked (fmt " relevance ~d and" ma.relevance))
+               (when (not (none-checked? checkbox-tree)) (fmt " relevance ~d and" ma.relevance))
                (fmt " ~d votes" ma.votes)))))) ;; and x relevance
       (:p "Know a solution that's not here? Make it available to others " 
        (:a :href "/new-mini-article" "here")))))
@@ -511,8 +511,8 @@
                                                  param-name (if (picture? given) "Picture" "Paragraph") param-name)
                                          (format nil "(~a:~a {name : {~a}})" 
                                                  param-name (if (picture? given) "Picture" "Paragraph") param-name))
-                         (next-ret-str (format nil "~a.~a" param-name (if (picture? given) "path" "content"))
-                                       (format nil "~a.~a" param-name (if (picture? given) "path" "content")))
+                         (next-ret-str (format nil "~a.~a~:[~;, ~a.name~]" param-name (if (picture? given) "path" "content") (picture? given) param-name)
+                                       (format nil "~a.~a~:[~;, ~a.name~]" param-name (if (picture? given) "path" "content") (picture? given) param-name))
                          (match-acc (cons next-match-str nil) 
                                     (cons next-match-str match-acc))
                          (ret-acc (cons next-ret-str nil)
@@ -522,9 +522,11 @@
                (problem.content (extract-value "problem.content" cyph-ret))
                (prob_pic.path (extract-value "prob_pic.path" cyph-ret))
                (prob_pic_caption.content (extract-value "prob_pic_caption.content" cyph-ret))
+               (prob_pic.name (extract-value "prob_pic.name" cyph-ret))
                (solution.content (extract-value "solution.content" cyph-ret))
                (sol_pic.path (extract-value "sol_pic.path" cyph-ret))
-               (sol_pic_caption.content (extract-value "sol_pic_caption.content" cyph-ret)))
+               (sol_pic_caption.content (extract-value "sol_pic_caption.content" cyph-ret))
+               (sol_pic.name (extract-value "sol_pic.name" cyph-ret)))
             (htm
               (:div :class "bottom"
               (:h1 (str (aif (first names) it "Not title yet.")))
@@ -536,7 +538,7 @@
                     (:a :href (path->uri prob_pic.path)
                      (:img :src (path->uri (small-version prob_pic.path)) ; The problem picture (should be uri?)
                       :alt "The problem picture name"))             ; The prob_pic.name
-                    (:figcaption (str (aif prob_pic_caption.content it "No problem picture caption yet.")))))
+                    (:figcaption (str (aif prob_pic_caption.content (format nil "~a: ~a" prob_pic.name it) "No problem picture caption yet.")))))
                 "No Problem Picture yet. Adding caption first is ok, but it won't show up here before picture is added.")
               (:h3 "Solution")
               (:p (str (aif solution.content it "No solution description yet.")))
@@ -546,7 +548,7 @@
                     (:a :href (path->uri sol_pic.path)
                      (:img :src (path->uri (small-version sol_pic.path)) ; The problem picture (should be uri?)
                       :alt "The solution picture name"))             ; The prob_pic.name
-                    (:figcaption (str (aif sol_pic_caption.content it "No solution picture caption yet.")))))
+                    (:figcaption (str (aif sol_pic_caption.content (format nil "~a: ~a" sol_pic.name it) "No solution picture caption yet.")))))
                 "No Solution Picture yet. Adding caption first is ok, but it won't show up here before picture is added."))))))))
 
  (defun which-column? (str cyph-ret)

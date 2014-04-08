@@ -29,6 +29,10 @@ and none with web-programming.
  8. Now ```(initiate-web-app)```
  9. Point a web browser at [localhost:8080/print-issue-solution-filter](http://localhost:8080/print-issue-solution-filter)
 
+##### Note:
+PISF uses an external program, convert, to make smaller versions of pictures.
+For the apt-get users out there: ```apt-get install imagemagick``` will do the
+trick.
 
 ### Features
  * Uses no javascript or cookies
