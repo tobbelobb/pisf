@@ -22,7 +22,7 @@ and none with web-programming.
  1. Fire up [neo4j](http://www.neo4j.org/) to serve a graph on some adress
  2. Open my-cl-neo4j-2.0.1/config.lisp and feed that adress into the ```*host*``` special variable
  3. Head into pisf-backend/inits.lisp and feed in the path to that directory into the ```*source-pathname*``` special variable
- 4. Look into pisf/config.lisp and feed in the correct *source-pathname* there
+ 4. Look into pisf/config.lisp and feed in the correct ```*source-pathname*``` there
     as well...
  5. Add your pisf folder and its subfolders to your [quicklisp](http://www.quicklisp.org/beta/) search path. I do this by creating the file ~/.config/common-lisp/source-registry.conf.d/link-farm.conf and adding the line ```(:tree "/path/to/pisf/")``` to it. Check the [ASDF-manual](http://common-lisp.net/project/asdf/asdf.html#Configuring-ASDF-to-find-your-systems) for other methods.
  6. Fire up SBCL and type ```(ql:quickload :pisf)```
