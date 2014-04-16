@@ -242,47 +242,50 @@
                             (height nil) (width nil)
                             (commit? t)
                             (commit-uri nil)) 
-  (let ((name (if name 
-                (name-conventions name) 
-                (name-conventions (pathname-name path))))) ; Generate filename
-    (if-elements-with-label-exist-bind-commit-uri
-      depicts ; accepts empty list silently
-      "Bush"
-      commit-uri ; Initiate transaction
+  (if (and path  
+           (or depicts 
+               (and (null explains) (null explained-by))))
+    (let ((name (if name 
+                  (name-conventions name) 
+                  (name-conventions (pathname-name path))))) ; Generate filename
       (if-elements-with-label-exist-bind-commit-uri
-        (append explained-by explains)
-        "Picture"
-        commit-uri
-        (transaction-request
-          (format nil
-                  "MATCH (b:Bush) ~
-                  ~:[~;, (explained_by:Picture) ~] ~
-                  ~:[~;, (explains:Picture) ~] ~
-                   WHERE b.name            IN {bush_names} ~
-                ~:[~;AND explained_by.name IN {explained_by}~] ~
-                ~:[~;AND explains.name     IN {explains}~] ~
-                   SET b.accessed            = timestamp() ~
-                ~:[~;, explained_by.accessed = timestamp()~] ~
-                ~:[~;, explains.accessed     = timestamp()~] ~
-                   MERGE (new:Picture {name : {name}, ~
-                                       path : {path}~
-                               ~:[~;, width : {width}~]~
-                              ~:[~;, height : {height}~]}) ~
-                     ON CREATE SET new.created=timestamp() ~
-                   MERGE (new) -[:DEPICTS ]->(b) ~
-              ~:[~;MERGE (new)<-[:EXPLAINS]- (explained_by)~] ~
-              ~:[~;MERGE (new) -[:EXPLAINS]->(explains)~] ~
-                   RETURN new.name"
-                   explained-by explains explained-by explains 
-                   explained-by explains width height explained-by explains)
-          (append `(("name" . ,name)
-                    ("path" . ,(namestring path))
-                    ("bush_names" . ,(coerce (listify depicts) 'simple-vector)))
-                  (loop for l1 in (list width height)          and l2 in (list explains explained-by)
-                        and param-name1 in '("width" "height") and param-name2 in '("explains" "explained_by")
-                        when l1 collect `(,param-name1 . ,l1)
-                        when l2 collect `(,param-name2 . ,(coerce (listify l2) 'simple-vector)))) 
-          :commit-uri commit-uri :commit? commit?)))))
+        depicts ; accepts empty list silently
+        "Bush"
+        commit-uri ; Initiate transaction
+        (if-elements-with-label-exist-bind-commit-uri
+          (append explained-by explains)
+          "Paragraph" 
+          commit-uri
+          (transaction-request
+            (format nil
+                    "~:[~;MATCH (b:Bush) ~] ~
+                    ~:[~;, (explained_by:Paragraph) ~] ~
+                    ~:[~;, (explains:Paragraph) ~] ~
+                    ~:[~; WHERE b.name            IN {bush_names} ~] ~
+                  ~:[~;AND explained_by.name IN {explained_by}~] ~
+                  ~:[~;AND explains.name     IN {explains}~] ~
+                  ~:[~; SET b.accessed            = timestamp() ~]~
+                  ~:[~;, explained_by.accessed = timestamp()~] ~
+                  ~:[~;, explains.accessed     = timestamp()~] ~
+                     MERGE (new:Picture {name : {name}, ~
+                                         path : {path}~
+                                 ~:[~;, width : {width}~]~
+                                ~:[~;, height : {height}~]}) ~
+                       ON CREATE SET new.created=timestamp() ~
+                ~:[~;MERGE (new) -[:DEPICTS]->(b) ~]~
+                ~:[~;MERGE (new)<-[:EXPLAINS]- (explained_by)~] ~
+                ~:[~;MERGE (new) -[:EXPLAINS]->(explains)~] ~
+                     RETURN new.name"
+                     depicts explained-by explains depicts explained-by explains depicts 
+                     explained-by explains width height depicts explained-by explains)
+            (append `(("name" . ,name)
+                      ("path" . ,(namestring path))
+                      ("bush_names" . ,(coerce (listify depicts) 'simple-vector)))
+                    (loop for l1 in (list width height)          and l2 in (list explains explained-by)
+                          and param-name1 in '("width" "height") and param-name2 in '("explains" "explained_by")
+                          when l1 collect `(,param-name1 . ,l1)
+                          when l2 collect `(,param-name2 . ,(coerce (listify l2) 'simple-vector)))) 
+            :commit-uri commit-uri :commit? commit?))))))
 
 
 ;; Insert the mini-article into the database
