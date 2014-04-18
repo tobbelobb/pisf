@@ -1,6 +1,17 @@
-(defpackage :print-issue-solution-filter
+(defpackage #:pisf-config
+  (:documentation "configuration variables for pisf package.")
+  (:use)
+  (:export #:*source-pathname*))
+
+(defparameter pisf-config:*source-pathname*
+  (make-pathname :type nil
+                 :name nil
+                 :defaults (asdf:system-source-directory :pisf))
+  "base directory of all files used by pisf.")
+
+(defpackage #:print-issue-solution-filter
   (:nicknames :pisf)
-  (:use :cl :pisf-backend)
+  (:use :cl :pisf-backend :pisf-config)
   (:import-from :hunchentoot
                 :create-static-file-dispatcher-and-handler
                 :*dispatch-table*

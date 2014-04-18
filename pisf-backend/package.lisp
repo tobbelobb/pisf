@@ -1,6 +1,18 @@
-(defpackage :print-issue-solution-filter-backend
+(defpackage #:pisf-backend-config
+  (:documentation "Configuration variables for pisf-backend package.")
+  (:use)
+  (:export #:*source-pathname*))
+
+(defparameter pisf-backend-config:*source-pathname*
+  (make-pathname :type nil
+                 :name nil
+                 :defaults (asdf:system-source-directory :pisf-backend))
+  "Base directory of all files used by pisf-backend.")
+
+
+(defpackage #:print-issue-solution-filter-backend
   (:nicknames :pisf-backend) 
-  (:use :cl :my-cl-neo4j-2.0.1)
+  (:use :cl :my-cl-neo4j-2.0.1 :pisf-backend-config)
   (:documentation "A tool for building and accessing a structured knowledge database ~
                    for the RepRap community.")
   (:export ; functions

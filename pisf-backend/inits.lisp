@@ -1,6 +1,6 @@
 (in-package :pisf-backend)
 
-(defparameter *source-pathname* #P"/home/torbjorn/Desktop/VanityRepRap/pisf/pisf-backend/")
+;;(defparameter *source-pathname* #P"/home/torbjorn/Desktop/VanityRepRap/pisf/pisf-backend/")
 
 ;; Convenience variables and functions based on *source-pathname*
 (defparameter *bush-merge-pathname* 
